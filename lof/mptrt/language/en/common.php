@@ -38,5 +38,5 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-   'NOT_ENOUGH' => '<b>This content is reserved to users who send at least %d posts, you have sent only %d posts.</b>',
+   'NEED_MORE_POSTS' => '<b>This content is reserved to users who send at least %d posts, you need %d more posts to view this.</b>',
 ));

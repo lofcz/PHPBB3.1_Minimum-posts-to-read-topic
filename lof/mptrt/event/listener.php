@@ -77,24 +77,21 @@ $message=$rowmessage['MESSAGE'];
 if(strpos($message,"minPosts]"))
 {
 
-$uid = $this->user->data['user_id'];
-$query = $this->db->sql_query("SELECT count(post_id) as count FROM ".POSTS_TABLE." WHERE poster_id=$uid");
-$result = $this->db->sql_fetchrow($query);
-$ut = $result['count'];
+$userPosts = $this->user->data['user_posts'];
 
 preg_match_all("#\[minPosts=(.*?)\]#", $message, $atopics);
 if($atopics[1][0])
 {
 foreach($atopics[1] as $posts)
 {
-$lang=sprintf($this->user->lang['NOT_ENOUGH'], $posts, $ut);
+$lang=sprintf($this->user->lang['NEED_MORE_POSTS'], $posts, ($posts - $userPosts));
 preg_match_all("#\[minPosts=$posts\](.*?)\[/minPosts\]#", $message, $amessage);
 
 if($amessage[1][0])
 {
 foreach($amessage[1] as $msg)
 {
-if($ut < $posts)
+if($userPosts < $posts)
 {
 $message = str_replace("[minPosts=$posts]$msg", $lang, $message);
 }
