@@ -5,9 +5,9 @@ This extension adds a new BBCode [minPosts=n] which hides it's content from read
 #Installation
 1) Unpack folder 
 2) Copy folder "lof" to forum/ext
-3) In ACP extensions panel chcek for "Minimum posts to read topic"
+3) In ACP extensions panel, check for "Minimum posts to read topic"
 4) Click enable
 
 Feel free to PR :-) 
 
-Special thanks to BruinoIt. 
+Special thanks to BruinoIt and Quake. 
