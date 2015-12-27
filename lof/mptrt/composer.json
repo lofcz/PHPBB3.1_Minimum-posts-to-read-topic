@@ -1,0 +1,24 @@
+{
+"name": "lof/mptrt",
+"type": "phpbb-extension",
+"description": "It adds a new bbcode [minPosts=xyz]text[/minPosts] wchich hides it's content from users who sent less posts than required (number xyz)",
+"homepage": "https://github.com/kocourmatej/PHPBB3.1_Minimum-posts-to-read-topic",
+"version": "0.1.0",
+"time": "2015-12-27",
+"license": "GPL-2.0",
+"authors": [
+{
+"name": "LordOfFlies",
+"role": "Author"
+}
+],
+"require": {
+"php": ">=5.3"
+},
+"extra": {
+"display-name": "Minimum posts to read topic",
+"soft-require": {
+"phpbb/phpbb": "3.1.*@dev"
+}
+}
+}
