@@ -59,6 +59,8 @@ static public function getSubscribedEvents()
 return array(			
 'core.user_setup'						=> 'setup',
 'core.viewtopic_modify_post_row' => 'viewtopic_add',
+'core.modify_posting_auth'=> 'pauth',
+'core.posting_modify_template_vars' => 'template'
 );	
 }
 public function setup($event)	{	
@@ -79,10 +81,10 @@ if(strpos($message,"minPosts]"))
 
 $userPosts = $this->user->data['user_posts'];
 
-preg_match_all("#\[minPosts=(.*?)\]#", $message, $atopics);
-if($atopics[1][0])
+preg_match_all("#\[minPosts=(.*?)\]#", $message, $aposts);
+if($aposts[1][0])
 {
-foreach($atopics[1] as $posts)
+foreach($aposts[1] as $posts)
 {
 $lang=sprintf($this->user->lang['NEED_MORE_POSTS'], $posts, ($posts - $userPosts));
 preg_match_all("#\[minPosts=$posts\](.*?)\[/minPosts\]#", $message, $amessage);
@@ -93,17 +95,91 @@ foreach($amessage[1] as $msg)
 {
 if($userPosts < $posts)
 {
-$message = str_replace("[minPosts=$posts]$msg", $lang, $message);
+$message = str_replace("[minPosts=$posts]$msg", $lang, $message); // Replace content with "You need more posts to view this... "
 }
-$message = str_replace("[minPosts=$posts]", "", $message);
-}
-}
+$message = str_replace("[minPosts=$posts]", "", $message);  // Blank first part of BBCode 
 }
 }
 }
+}
+}
+$message = str_replace("[/minPosts]","", $message); // Blank rest of BBCode
 
-$message = str_replace("[/minPosts]","", $message);
 $rowmessage['MESSAGE'] = $message;
 $event['post_row'] = $rowmessage;
 }
+
+public function pauth($event)
+{
+/*
+draft_id, error, forum_id, is_authed, lastclick, load, mode, post_id, preview, refresh, save, submit, topic_id
+*/
+$post_id = $event['post_id'];
+$mode = $event['mode'];
+
+if($mode=="quote" and $post_id)
+{
+$error = 0;
+$ut = $this->user->data['user_posts'];
+
+
+$qa = $this->db->sql_query("SELECT post_text FROM ".POSTS_TABLE." WHERE post_id=$post_id");
+$ra = $this->db->sql_fetchrow($qa);
+$message = $ra['post_text'];
+
+if(strpos($message,"minPosts]"))
+{
+preg_match_all("#\[minPosts=(.*?)\]#", $message, $atopics);
+if($atopics[1][0])
+{
+foreach($atopics[1] as $post)
+{
+if($ut < $post)
+{
+$error = 1;
+}
+}
+}
+}
+}
+if($error)
+{
+trigger_error('CANT_QUOTE');
+}
+}
+
+public function template($event)
+{
+/*
+cancel, draft_id, error, form_enctype, forum_id, load, message_parser, mode, moderators, page_data, page_title, post_data, post_id, preview, refresh, s_action, s_hidden_fields, s_topic_icons, save, submit, topic_id
+*/
+$ut = $this->user->data['user_posts'];
+
+$topic_id = $event['topic_id'];
+$qa = $this->db->sql_query("SELECT post_text FROM ".POSTS_TABLE." WHERE topic_id=$topic_id");
+
+while($r = $this->db->sql_fetchrow($qa))
+{
+$message = $r['post_text'];
+if(strpos($message,"minPosts]"))
+{
+preg_match_all("#\[minPosts=(.*?)\]#", $message, $atopics);
+if($atopics[1][0])
+{
+foreach($atopics[1] as $topics)
+{
+if($ut < $topics)
+{
+$error = 1;
+}
+}
+}
+}
+}
+if($error)
+{
+$event['mode'] = "ahahahahaha";
+}
+}
+
 }

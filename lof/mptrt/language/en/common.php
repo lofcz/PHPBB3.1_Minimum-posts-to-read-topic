@@ -38,5 +38,6 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-   'NEED_MORE_POSTS' => '<b>This content is reserved to users who send at least %d posts, you need %d more posts to view this.</b>',
+   'NEED_MORE_POSTS' => 'This content is reserved to users who send at least %d posts, you need %d more posts to view this.',
+   'CANT_QUOTE' => 'You cannot quote this post because it contains message that you cannot read.'
 ));
